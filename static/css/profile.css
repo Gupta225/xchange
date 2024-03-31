@@ -1,0 +1,23 @@
+#profile-block
+{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+#profile-img
+{
+    height: 10rem;
+    width: 10rem;
+    border-radius: 100%;
+}
+nav{
+    background-color: aliceblue;
+    height: 5vh;
+}
+nav ul{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    list-style-type: none;
+    height: 100%;
+}

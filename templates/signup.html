@@ -1,0 +1,22 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="/static/css/signup.css" >
+    </head>
+    <body>
+        <form action="/signup" method="post" enctype="multipart/form-data">
+        <div id="signup-box">
+            <span><h2>Sign-Up</h2></span>
+            <input type="text" id="username" name="username" placeholder="Enter Username">
+            <input type="password" id="password" name="password" placeholder="password">
+            <input type="file" id="profile-img" name="profile-img">
+            <button type="submit">Signup</button>
+        </div>
+    </form>
+    <br>
+        
+        <div id="login-box">
+            
+            <p>Already a user?&ensp;<a href="/log-in">login here</a></p>
+        </div>
+    </body>
+</html>

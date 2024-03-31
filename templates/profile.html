@@ -1,0 +1,88 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/profile.css">
+    <title>User Profile</title>
+    <style>
+        /* Add your CSS styles here */
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        .items-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .item {
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .item img {
+            max-width: 100px;
+            max-height: 100px;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li>Heading</li>
+            <li>Home</li>
+            <li><a href='/log-in'>logout</a> </li>
+        </ul>
+    </nav>
+    <div class="container">
+        <img src="data:image/png;base64,{{ profile_img }}" alt="Profile Image" id="profile-img">        <h1 id="username">{{user['username']}}</h1>
+        <h1 id="user-email">User Email</h1>
+        <h2>Items for Sale</h2>
+        <div class="items-container" id="itemsContainer">
+            <!-- Dynamically generated item elements will go here -->
+        </div>
+    </div>
+
+    <script>
+        // Sample items data (replace with your actual data fetched from MongoDB)
+        const items = [
+            { name: 'Item 1', image: 'item1.jpg' },
+            { name: 'Item 2', image: 'item2.jpg' },
+            { name: 'Item 3', image: 'item3.jpg' }
+        ];
+
+        // Get the container where item elements will be placed
+        const itemsContainer = document.getElementById('itemsContainer');
+
+        // Loop through items and generate HTML elements dynamically
+        items.forEach(item => {
+            // Create a div element for the item
+            const itemDiv = document.createElement('div');
+            itemDiv.classList.add('item');
+
+            // Create an img element for the item image
+            const img = document.createElement('img');
+            img.src = item.image;
+            img.alt = item.name;
+
+            // Append the img element to the item div
+            itemDiv.appendChild(img);
+
+            // Create a paragraph element for the item name
+            const itemName = document.createElement('p');
+            itemName.textContent = item.name;
+
+            // Append the item name paragraph to the item div
+            itemDiv.appendChild(itemName);
+
+            // Append the item div to the items container
+            itemsContainer.appendChild(itemDiv);
+        });
+    </script>
+</body>
+</html>

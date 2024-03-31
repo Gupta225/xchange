@@ -18,5 +18,13 @@
             
             <p>Didn't have a account?&ensp;<a href="/sign-up">signup here</a></p>
         </div>
+        <script>
+            window.onload = function() {
+                var message = "{{ message }}";
+                if (message) {
+                    alert(message);
+                }
+            };
+        </script>
     </body>
 </html>

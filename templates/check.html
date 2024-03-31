@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check Login Status</title>
+</head>
+<body>
+    <h1>Login Status</h1>
+    <p id="loginStatus">Checking...</p>
+
+    <script>
+        // Check if the 'username' cookie exists
+        if (document.cookie.includes('username')) {
+            // User is logged in
+            document.getElementById('loginStatus').innerText = 'Logged in';
+        } else {
+            // User is logged out
+            document.getElementById('loginStatus').innerText = 'Logged out';
+        }
+    </script>
+</body>
+</html>

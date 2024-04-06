@@ -1,6 +1,7 @@
 from flask import Flask,render_template,request,redirect, url_for,session,flash,jsonify
 from flask_pymongo import PyMongo
 import  base64
+from bson.objectid import ObjectId
 
 app=Flask(__name__)
 
@@ -9,7 +10,7 @@ app.config["MONGO_URI"] = "mongodb://localhost:27017/myDatabase"
 mongo = PyMongo(app)
 
 @app.route('/')
-def home():
+def login():
     return render_template('login.html')
 
 @app.route('/sign-up')
@@ -26,42 +27,55 @@ def logging():
         username=request.form['username']
         password=request.form['password']
         user = mongo.db.users.find_one({'username': username})
-        item = mongo.db.items.find({'username': username}, {'item_image': 1})
-        encoded_images = []
-        for item_image in item:
-            encoded_image = base64.b64encode(item_image['item_image']).decode('utf-8')
-            encoded_images.append(encoded_image)
+        # item = mongo.db.items.find({'username': username}, {'item_image': 1})
+        # encoded_images = []
+        # for item_image in item:
+        #     encoded_image = base64.b64encode(item_image['item_image']).decode('utf-8')
+        #     encoded_images.append(encoded_image)
+        # items = mongo.db.items.find({'username': username})
+        # l=len(encoded_images)
         if not user:
-            return render_template('login.html',message="user does not exist")
+            return render_template('login.html',message="User not found")
         else:
              if user['password'] == password:
-                # session['user_id'] = user['_id']
                 session['username'] = username
-                profile_img = base64.b64encode(user['profile-img']).decode('utf-8')
-                return render_template('/profile.html',user=user,profile_img=profile_img,message='logged in successfully',encoded_images=encoded_images)
+                # profile_img = base64.b64encode(user['profile-img']).decode('utf-8')
+                # return render_template('/profile.html',user=user,profile_img=profile_img,message='logged in successfully',encoded_images=encoded_images,items=items,l=l)
+                return redirect(url_for('showProfile',message="Logged in successfully"))
              else:
-                 return render_template('login.html',message="invalid username or password")
+                 return render_template('login.html',message="Invalid Credentials")
              
-
+@app.route('/profile')
+def showProfile():
+    username=session.get('username')
+    user = mongo.db.users.find_one({'username': username})
+    item = mongo.db.items.find({'username': username}, {'item_image': 1})
+    encoded_images = []
+    message=request.args.get('message')
+    items = mongo.db.items.find({'username': username})
+    for item_image in item:
+        encoded_image = base64.b64encode(item_image['item_image']).decode('utf-8')
+        encoded_images.append(encoded_image)
+    l=len(encoded_images)
+    profile_img = base64.b64encode(user['profile-img']).decode('utf-8')
+    return render_template('/profile.html',user=user,profile_img=profile_img,message=message,encoded_images=encoded_images,items=items,l=l)
+    
 @app.route('/signup', methods= ['POST'])
 def signup():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
         image = request.files['profile-img']
+        mobile=request.form['mobile']
+        name=request.form['name']
         imagedata=image.read()
         existing_user = mongo.db.users.find_one({'username': username})
         if existing_user:
             return 'Username already exists!'
 
-        new_user = {'username': username, 'password': password,'profile-img':imagedata}
+        new_user = {'username': username, 'password': password,'profile-img':imagedata,'mobile':mobile,'name':name}
         mongo.db.users.insert_one(new_user)
-        # existing = mongo.db.items.find_one({'username': username})
-
-
         
-        
-        # return 'User created successfully!'
     
     return render_template('login.html')
 
@@ -71,7 +85,8 @@ def add():
     return render_template('additem.html')
 @app.route('/logout')
 def logout():
-    session.pop('username', None)  
+    session.pop('username', None) 
+ 
     return redirect(url_for('loginpage'))
 @app.route('/check')
 def check():
@@ -80,6 +95,25 @@ def check():
         return f"The username '{username}' is stored in the session."
     else:
         return "No username stored in the session."
+    
+@app.route('/home')
+def home():
+    item_imgs=mongo.db.items.find({},{'item_image':1})
+    items=mongo.db.items.find()
+    item_mob=mongo.db.items.find()
+    mobile=[]
+    for item in item_mob:
+        username = item['username']
+        user = mongo.db.users.find_one({'username': username})
+        mobile_number = user.get('mobile')  
+        mobile.append(mobile_number)
+    encoded_images=[]
+    for img in item_imgs:
+        encoded_image = base64.b64encode(img['item_image']).decode('utf-8')
+        encoded_images.append(encoded_image)
+    l=len(encoded_images)
+    return render_template('home.html',encoded_images=encoded_images,l=l,items=items,mobile=mobile)
+
 @app.route('/addingitem', methods= ['POST'])
 def  addingitem():
     if request.method=='POST':
@@ -97,29 +131,28 @@ def  addingitem():
                 'item_image': imgdata  
             }
             
-            mongo.db.items.insert_one(new_item)
-            
-            return 'item added successfully'
+            mongo.db.items.insert_one(new_item)            
+            return redirect(url_for('showProfile' ,message="Item added successfully"))
         else:
             return 'User not logged in. Please log in to add items.'
-        
+@app.route('/delete-item/<item_id>', methods=['POST'])
+def delete_item(item_id):
+        mongo.db.items.delete_one({'_id': ObjectId(item_id)})
+        return redirect(url_for('showProfile'))        
 
-# @app.route('/get-user-items', methods=['GET'])
-# def get_user_items():
-#     # Get the username from the session
-#     username = session.get('username')
-#     if username:
-#         # Query MongoDB to get items belonging to the specific user
-#         items = mongo.db.items.find({'username': username})
+# @app.route('/profile')
+# def profile():
+#     username=session.get('username')
+#     user = mongo.db.users.find_one({'username': username})
+#     item = mongo.db.items.find({'username': username}, {'item_image': 1})
+#     encoded_images = []
+#     for item_image in item:
+#         encoded_image = base64.b64encode(item_image['item_image']).decode('utf-8')
+#         encoded_images.append(encoded_image)
+#     profile_img = base64.b64encode(user['profile-img']).decode('utf-8')
+#     return render_template('/profile.html',user=user,profile_img=profile_img,message='item added successfully',encoded_images=encoded_images)
 
-#         # Convert MongoDB cursor to list of dictionaries
-#         items_list = list(items)
 
-#         # Return items as JSON
-#         return jsonify({'error': 'User not logged in'})
-#     else:
-#         # If user is not logged in, return an error message
-#         return jsonify({'error': 'User not logged in'})
-    
+
 if __name__ == '__main__':
     app.run(debug=True)

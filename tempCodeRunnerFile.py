@@ -1,2 +1,1 @@
- # existing_user['_id'] = str(existing_user['_id'])
-        # return
+            return redirect(url_for('profile'))

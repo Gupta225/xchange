@@ -1,0 +1,33 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="/static/css/home.css">
+    </head>
+    <body>
+        <nav>
+            <ul>
+                <li>Heading</li>
+                <li><input type="text" name="search" placeholder="search"> </li>
+                <li><a href='/logout' onclick="popsession()">logout</a> </li>
+                <li><a href='/profile' >Profile</a></li>
+            </ul>
+        </nav>
+        <div class="items-container" id="itemsContainer">
+            {% for i in range(l) %}
+            <div>
+            <img src="data:image/png;base64,{{ encoded_images[i] }}" alt="Image">
+            <h2>{{ items[i].item_name }}</h2>
+            <p>Cost: ${{ items[i].item_cost }}</p>
+            <p>Name: {{ items[i].username }}</p>
+            <p>Mobile: {{ mobile[i] }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </body>
+    <script>
+        popsession()
+        {
+            sessionStorage.setItem("alertShownlogin", "false");
+            sessionStorage.setItem("alertShownadd", "false");
+        }
+    </script>
+</html>

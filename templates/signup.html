@@ -1,4 +1,4 @@
-<html>
+<!-- <html>
     <head>
         <link rel="stylesheet" href="/static/css/signup.css" >
     </head>
@@ -7,6 +7,8 @@
         <div id="signup-box">
             <span><h2>Sign-Up</h2></span>
             <input type="text" id="username" name="username" placeholder="Enter Username">
+            <input type="text" id="name" name="name" placeholder="Enter Full Name">
+            <input type="number" id="number" name="mobile" placeholder="Enter mobile number">
             <input type="password" id="password" name="password" placeholder="password">
             <input type="file" id="profile-img" name="profile-img">
             <button type="submit">Signup</button>
@@ -19,4 +21,48 @@
             <p>Already a user?&ensp;<a href="/log-in">login here</a></p>
         </div>
     </body>
+</html> -->
+
+<html>
+  <head>
+    <link rel="stylesheet" href="/static/css/signup.css" />
+  </head>
+  <body>
+    <div class="signup-page">
+      <div class="signup-left"></div>
+      <div class="signup-right">
+        <form action="/signup" method="post" enctype="multipart/form-data">
+          <div class="signup-box">
+            <h2>Sign-Up</h2>
+            <div class="input-container">
+              <input
+                type="text"
+                id="username"
+                name="username"
+                placeholder="Username"
+              />
+              <input
+                type="number"
+                name="phone"
+                id="phone"
+                placeholder="Phone"
+              />
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Password"
+              />
+              <input type="file" id="profile-img" name="profile-img" />
+            </div>
+            <button type="submit">Signup</button>
+            <div class="line"></div>
+            <div class="login">
+              <p>Already registered? &nbsp;<a href="/log-in">Login here</a></p>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
 </html>
